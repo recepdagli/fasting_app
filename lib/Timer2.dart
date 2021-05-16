@@ -22,6 +22,11 @@ class Timer2State extends State<Timer2> {
   final Color color;
   DateTime _dateTime;
 
+  @override
+  initState(){
+    _dateTime = DateTime.now();
+  }
+
   boxWidget(String level,String hour,Color boxColor,Function onTap){
     return InkWell(
       onTap: onTap,
@@ -93,7 +98,7 @@ class Timer2State extends State<Timer2> {
                     onDateTimeChanged: (DateTime newdate) {
                       _dateTime = newdate;
                     },
-                    use24hFormat: false,
+                    use24hFormat: MediaQuery.of(context).alwaysUse24HourFormat,
                     maximumDate: new DateTime(2021, 12, 30),
                     minimumYear: 2019,
                     maximumYear: 2050,
@@ -106,7 +111,7 @@ class Timer2State extends State<Timer2> {
                 onTap: (){
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Timer3(hour,level,color,_dateTime)),
+                    MaterialPageRoute(builder: (context) => Timer3(hour,level,color,_dateTime.toLocal())),
                   );
                 },
                 child: Container(

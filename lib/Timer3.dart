@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'dart:math';
 
@@ -77,21 +80,44 @@ class Timer3State extends State<Timer3> {
 
   @override
   void initState() {
-    startDate = _dateTime;
-    endDate = _dateTime.add(Duration(hours: int.parse(hour)));
+    startDate = _dateTime.toLocal();
+    endDate = _dateTime.add(Duration(hours: int.parse(hour))).toLocal();
+    startHour = startDate.hour.toString();
+    endHour = endDate.hour.toString();
     calcTime();
+    timer = Timer.periodic(Duration(minutes: 1), (Timer t) => calcTime());
+
   }
 
   String startHour= "";
   String endHour = "";
-  String elapsedTime= "";
-  String timeLeft = "";
+  String elapsedTime_hour= "";
+  String timeLeft_hour = "";
+  String elapsedTime_min= "";
+  String timeLeft_min = "";
+
+  Timer timer;
+
+  int makePositive(int val){
+    if(val >= 0){
+      return val;
+    }
+    else{
+      return val * -1;
+    }
+
+  }
 
   void calcTime(){
-    startHour = startDate.hour.toString();
-    endHour = endDate.hour.toString();
-    elapsedTime = startDate.difference(DateTime.now()).inHours.toString();
-    timeLeft = endDate.difference(DateTime.now()).inHours.toString();
+    setState(() {
+      elapsedTime_hour = makePositive(((startDate.difference(DateTime.now().toLocal()).inMinutes)~/60)).toString();
+      timeLeft_hour = makePositive(((endDate.difference(DateTime.now().toLocal()).inMinutes)~/60)).toString();
+      elapsedTime_min = makePositive((makePositive((startDate.difference(DateTime.now().toLocal()).inMinutes))-(int.parse(elapsedTime_hour)*60))).toString();
+      timeLeft_min = makePositive(((makePositive((endDate.difference(DateTime.now().toLocal()).inMinutes))-(int.parse(timeLeft_hour)*60)))+1).toString();
+      print(startDate.difference(DateTime.now().toLocal()).inMinutes.toString());
+      print(startDate.hour);
+      print(DateTime.now().toLocal().hour);
+    });
   }
 
   @override
@@ -128,11 +154,11 @@ class Timer3State extends State<Timer3> {
                                   Spacer(),
                                   Text("Elapsed Time",style: TextStyle(color: Colors.grey,fontSize: 15)),
                                   SizedBox(height: 5,),
-                                  Text("${elapsedTime}h",style: TextStyle(color: Colors.black,fontSize: 25),),
+                                  Text("${elapsedTime_hour}h${elapsedTime_min}m",style: TextStyle(color: Colors.black,fontSize: 25),),
                                   SizedBox(height: 5,),
                                   Text("Time Left",style: TextStyle(color: Colors.grey,fontSize: 15)),
                                   SizedBox(height: 5,),
-                                  Text("${timeLeft}h",style: TextStyle(color: Colors.black,fontSize: 25)),
+                                  Text("${timeLeft_hour}h${timeLeft_min}m",style: TextStyle(color: Colors.black,fontSize: 25)),
                                   Spacer(),
                                 ],
                               ),
