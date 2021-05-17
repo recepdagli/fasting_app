@@ -147,7 +147,7 @@ class Timer3State extends State<Timer3> {
                             radius: MediaQuery.of(context).size.width - (MediaQuery.of(context).size.width/3),
                             lineWidth: 20.0,
                             animation: true,
-                            percent: 0.7,
+                            percent: makePositive((startDate.difference(DateTime.now().toLocal()).inMinutes))/(int.parse(hour)*60),
                             center: Center(
                               child: Column(
                                 children: [
